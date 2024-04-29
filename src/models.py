@@ -26,8 +26,14 @@ class Favorites(db.Model):
     planets = db.relationship('Planets', backref='planets_fav', nullable=True)
     characters = db.relationship('Characters', backref='characters_fav', nullable=True)
 
-    def to_dict(self):
-        return {}
+    def __repr__(self):
+        return '<Favorites %r>' % self.id
+    
+    def serialize(self):
+        return {
+            "planets": self.planets,
+            "characters": self.characters
+        }
     
 class Characters(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -39,8 +45,18 @@ class Characters(db.Model):
     skin_color = db.olumn(db.String(250), nullable=False)
     gender = db.Column(db.String(250), nullable=False)
 
-    def to_dict(self):
-        return {}
+    def __repr__(self):
+        return '<Characters %r>' % self.name
+    
+    def serialize(self):
+        return {
+            "name": self.name,
+            "birthyear": self.birthyear,
+            "eye_color": self.eye_color,
+            "hair_color": self.hair_color,
+            "skin_color": self.skin_color,
+            "gender": self.gender
+        }
     
     class Planets(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -53,5 +69,16 @@ class Characters(db.Model):
     orbital_period = db.Column(db.Integer, nullable=False)
     
 
-    def to_dict(self):
-        return {}
+    def __repr__(self):
+        return '<Planets %r>' % self.name
+    
+    def serialize(self):
+        return {
+            "name": self.name,
+            "climate": self.climate,
+            "diameter": self.diameter,
+            "terrain": self.terrain,
+            "skin_color": self.skin_color,
+            "population": self.population,
+            "orbital_period": self.orbital_period
+        }
