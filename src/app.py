@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
+from models import db, User, Planets, Favorites, Characters
 #from models import Person
 
 app = Flask(__name__)
@@ -36,14 +36,87 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
-@app.route('/user', methods=['GET'])
-def handle_hello():
+# TODOS LOS GET ALL: users, planets, characters y favorites
+
+@app.route('/users', methods=['GET'])
+def handle_get_users():
+
+    users = User.query.all()
+    users_serialized = []
+    for user in users:
+        users_serialized.append(user.serialize())
+    print(users)        
 
     response_body = {
-        "msg": "Hello, this is your GET /user response "
+        "msg": "The users: ",
+        "users": users_serialized
     }
 
     return jsonify(response_body), 200
+
+@app.route('/planets', methods=['GET'])
+def handle_get_planets():
+
+    planets = Planets.query.all()
+    planets_serialized = []
+    for planet in planets:
+        planets_serialized.append(planet.serialize())
+    print(planets)        
+
+    response_body = {
+        "msg": "The planets: ",
+        "planets": planets_serialized
+    }
+
+    return jsonify(response_body), 200
+
+@app.route('/characters', methods=['GET'])
+def handle_get_characters():
+
+    characters = Characters.query.all()
+    characters_serialized = []
+    for character in characters:
+        characters_serialized.append(character.serialize())
+    print(characters)        
+
+    response_body = {
+        "msg": "The characters: ",
+        "characters": characters_serialized
+    }
+
+    return jsonify(response_body), 200
+
+@app.route('/users/favorites', methods=['GET'])
+def handle_get_favorites():
+
+    favorites = Favorites.query.all()
+    favorites_serialized = []
+    for favorite in favorites:
+        favorites_serialized.append(favorite.serialize())
+    print(favorites)        
+
+    response_body = {
+        "msg": "The favorites: ",
+        "favorites": favorites_serialized
+    }
+
+    return jsonify(response_body), 200
+
+# TODOS LOS GET DE 1: user, planet, character y favorite
+
+@app.route('/users/<int:id>', methods=['GET'])
+def handle_get_one_user(id):
+
+    user = User.query.get(id)
+           
+
+    response_body = {
+        "msg": "The user: ",
+        "user": user.serialize()
+    }
+
+    return jsonify(response_body), 200
+
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':

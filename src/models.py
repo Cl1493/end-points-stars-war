@@ -1,13 +1,20 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Column, Integer, ForeignKey
 
 db = SQLAlchemy()
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(80), unique=False, nullable=False)
-    is_active = db.Column(db.Boolean(), nullable=False)
-    user_id = db.relationship('Favorites', backref='user_fav', nullable=False)
+    email = db.Column(db.String(120), unique=True)
+    password = db.Column(db.String(80), unique=False)
+    is_active = db.Column(db.Boolean())
+    user_id = db.relationship('Favorites', backref='user.id')
+    fav_id = db.Column(db.Integer, db.ForeignKey('fav.id'))
+
+    def __init__(self,email,password):
+        self.email = email
+        self.password = password
+        self.is_active = True
 
     def __repr__(self):
         return '<User %r>' % self.email
@@ -22,9 +29,10 @@ class User(db.Model):
     
 class Favorites(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user_fav.id'), nullable=True)
-    planets = db.relationship('Planets', backref='planets_fav', nullable=True)
-    characters = db.relationship('Characters', backref='characters_fav', nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    fav_id = db.relationship('User', backref='fav.id')
+    planets = db.relationship('Planets', backref='planets.id')
+    characters = db.relationship('Characters', backref='characters.id')
 
     def __repr__(self):
         return '<Favorites %r>' % self.id
@@ -37,13 +45,13 @@ class Favorites(db.Model):
     
 class Characters(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    fav_id = db.Column(db.Integer, db.ForeignKey('characters_fav.id'), nullable=False)
-    name = db.Column(db.String(250), unique=False, nullable=False)
-    bithyear = db.Column(db.Integer, nullable=False)
-    eye_color = db.Column(db.String(250), nullable=False)
-    hair_color = db.Column(db.String(250), nullable=False)
-    skin_color = db.olumn(db.String(250), nullable=False)
-    gender = db.Column(db.String(250), nullable=False)
+    fav_id = db.Column(db.Integer, db.ForeignKey('fav.id'))
+    name = db.Column(db.String(250), unique=False)
+    bithyear = db.Column(db.Integer)
+    eye_color = db.Column(db.String(250))
+    hair_color = db.Column(db.String(250))
+    skin_color = db.Column(db.String(250))
+    gender = db.Column(db.String(250))
 
     def __repr__(self):
         return '<Characters %r>' % self.name
@@ -58,15 +66,15 @@ class Characters(db.Model):
             "gender": self.gender
         }
     
-    class Planets(db.Model):
+class Planets(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    fav_id = db.Column(db.Integer, db.ForeignKey('planets_fav.id'), nullable=False)
-    name = db.Column(db.String(250), unique=True, nullable=False)
-    climate = db.Column(db.String(250), nullable=False)
-    diameter = db.Column(db.Integer, nullable=False)
-    terrain = db.Column(db.String(250), nullable=False)
-    population = db.Column(db.Integer, nullable=False)
-    orbital_period = db.Column(db.Integer, nullable=False)
+    fav_id = db.Column(db.Integer, db.ForeignKey('fav.id'))
+    name = db.Column(db.String(250), unique=True)
+    climate = db.Column(db.String(250))
+    diameter = db.Column(db.Integer)
+    terrain = db.Column(db.String(250))
+    population = db.Column(db.Integer)
+    orbital_period = db.Column(db.Integer)
     
 
     def __repr__(self):
