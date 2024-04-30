@@ -117,6 +117,64 @@ def handle_get_one_user(id):
 
     return jsonify(response_body), 200
 
+# TODOS LOS POST DE 1: user, planet, character
+
+@app.route('/users', methods=['POST'])
+def handle_create_user():
+
+    email : request.json.get('email')
+    password : request.json.get('password')
+
+    user = User(email=email, password=password)
+
+    db.session.add(user)
+    db.session.comit()      
+
+    response_body = {
+        "msg": "The user was created ",
+        "user": user.serialize()
+    }
+
+    return jsonify(response_body), 200
+
+# TODOS LOS PUT DE 1: user, planet, character
+
+@app.route('/users/<int:id>', methods=['PUT'])
+def handle_edit_user(id):
+
+    email : request.json.get('email')
+    password : request.json.get('password')
+    
+    user = User.query.get(id)
+           
+    user.email = email
+    user.password = password
+    db.session.commit()
+
+    response_body = {
+        "msg": "The user was modified ",
+        "user": user.serialize()
+    }
+
+    return jsonify(response_body), 200
+
+# TODOS LOS DELETE DE 1: user, planet, character
+
+@app.route('/users/<int:id>', methods=['DELETE'])
+def handle_delete_user(id):
+
+    user = User.query.get(id)
+
+    db.session.delete(user)   
+    db.session.commit()    
+
+    response_body = {
+        "msg": "The user was deleted "
+    }
+
+    return jsonify(response_body), 200
+
+
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
