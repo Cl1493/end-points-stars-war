@@ -8,7 +8,6 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
-    fav_id = db.Column(db.Integer, db.ForeignKey('favorite.id'), nullable=False)
     favorites = db.relationship('Favorites', backref='user')
 
 
@@ -26,10 +25,8 @@ class User(db.Model):
 class Favorites(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    planet_id = db.Column(db.Integer, db.ForeignKey('planet.id'), nullable=False)
-    fav_planet = db.relationship('Planets', backref='favorite')
-    character_id = db.Column(db.Integer, db.ForeignKey('character.id'), nullable=False)
-    fav_character = db.relationship('Characters', backref='favorite')
+    planet_id = db.Column(db.Integer, db.ForeignKey('planets.id'), nullable=False)
+    character_id = db.Column(db.Integer, db.ForeignKey('characters.id'), nullable=False)
 
     def __repr__(self):
         return '<Favorites %r>' % self.id
@@ -49,8 +46,7 @@ class Characters(db.Model):
     hair_color = db.Column(db.String(250), unique=False, nullable=False)
     skin_color = db.Column(db.String(250), unique=False, nullable=False)
     gender = db.Column(db.String(250), unique=False, nullable=False)
-    fav_id = db.Column(db.Integer, db.ForeignKey('favorite.id'), nullable=False)
-    favorite = db.relationship('Favorites', backref='character')
+    favorite = db.relationship('Favorites', backref='characters')
 
     def __repr__(self):
         return '<Characters %r>' % self.name
@@ -73,8 +69,7 @@ class Planets(db.Model):
     terrain = db.Column(db.String(250), unique=False, nullable=False)
     population = db.Column(db.Integer, unique=False, nullable=False)
     orbital_period = db.Column(db.Integer, unique=False, nullable=False)
-    fav_id = db.Column(db.Integer, db.ForeignKey('favorite.id'), nullable=False)
-    favorite = db.relationship('Favorites', backref='character')
+    favorite = db.relationship('Favorites', backref='planets')
     
 
     def __repr__(self):
