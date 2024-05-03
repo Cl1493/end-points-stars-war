@@ -36,6 +36,17 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
+
+@app.route('/wipeall', methods=['GET'])
+def database_wipe():
+    try:
+        db.reflect()
+        db.drop_all()
+        db.session.commit()
+    except Exception as e:
+        return "mec", 500
+    return "ok", 200
+
 # TODOS LOS GET ALL: users, planets, characters y favorites
 
 @app.route('/users', methods=['GET'])
